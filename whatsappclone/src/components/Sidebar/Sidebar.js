@@ -31,10 +31,10 @@ const Sidebar = () => {
               </div>
             </div>
             <div className="sidebar_chats">
-               <SidebarChat addNewChat />
-               <SidebarChat />
-               <SidebarChat />
-               <SidebarChat />
+              <SidebarChat addNewChat />
+              <SidebarChat />
+              <SidebarChat />
+              <SidebarChat />
             </div>
         </div>
     )
