@@ -13,4 +13,6 @@
 }
 .sidebarChat_info {
     margin-left: 15px;
+    position: relative;
+    bottom:1.2em;
 }
