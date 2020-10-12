@@ -1,33 +1,39 @@
 import React, {useState, useEffect} from 'react'
 import './SidebarChat.css'
 import {Avatar} from '@material-ui/core'
+import axios from '../../axios'
 
-const SidebarChat = ({addNewChat}) => {
-    const [seed,setSeed] = useState('')
-
+const SidebarChat = ({addNewChat,room}) => {
+    const [rooms,setRooms] = useState([])
     useEffect(() => {
-        setSeed(Math.floor(Math.random() * 5000))
+        axios.get('/api/v1/rooms/sync')
+        .then(res => {
+            setRooms(res.data)
+        })
     },[])
-    
     const createChat = () =>{
         const roomName = prompt("Please enter name for chat")
-        if(roomName){
-           //do some clever database stuff 
-        } 
+        const isRoomNew = rooms.filter( r => r.name === roomName)
+        if(isRoomNew.length !== 0){
+           //do some clever database stuff
+
+        }
+        else{
+            alert('This room already exists')
+        }
     }
 
     return  !addNewChat ? (
         <div className="sidebarChat">
-            <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
+            <Avatar src={room.image} />
             <div className="sidebarChat_info">
-                <h3>Room name</h3>
+            <h3>{room.name}</h3>
                 <p>Last message...</p>
             </div>
         </div>
     ) : (
         <div onClick={createChat} className="sidebarChat">
             <h2>Add new chat</h2>
-            
         </div>
     )
 }
