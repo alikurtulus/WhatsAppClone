@@ -43,14 +43,12 @@ const  Chat = ({messages}) => {
             </div>
             <div className="chat_body">
               {messages.map(message => (
-                   <p className={`chat_message ${message.received && "chat_receiver"}`} >
-                   <span className="chat_name">{message.name}</span>
-                    {message.message}
-              <span className="chat_timestamp">{message.timestamp}</span>
-                 </p>
+                  <p key={message._id} className={`chat_message ${message.received && "chat_receiver"}`} >
+                    <span className="chat_name">{message.name}</span>
+                      {message.message}
+                    <span className="chat_timestamp">{message.timestamp}</span>
+                  </p>
               ))}
-           
-              
             </div>
             <div className="chat_footer">
               <InsertEmoticonIcon />

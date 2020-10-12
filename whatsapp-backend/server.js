@@ -2,6 +2,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import Messages from './dbMessages.js'
+import Rooms from './dbRooms.js'
 import Pusher from 'pusher'
 import cors from 'cors'
 
@@ -14,7 +15,7 @@ const pusher = new Pusher({
     key: '0db53fdb4a3dd2c3d8d9',
     secret: 'a63acfc587cd752ae192',
     cluster: 'eu',
-    encrypted: true
+    useTLS: true,
   });
   
 // middleware config
@@ -66,6 +67,30 @@ app.get('/api/v1/messages/sync', (req,res)=> {
 app.post('/api/v1/messages/new', (req,res) => {
     const dbMessage = req.body
     Messages.create(dbMessage, (err, data) => {
+        if(err){
+            res.status(500).send(err)
+        }
+        else{
+            res.status(201).send(data)
+        }
+    })
+})
+
+app.get('/api/v1/rooms/sync', (req,res) => {
+    const dbRoom = req.body
+    Rooms.find((err,data) => {
+        if(err){
+            res.status(500).send(err)
+        }
+        else{
+            res.status(200).send(data)
+        }
+    })
+})
+
+app.post('/api/v1/rooms/new', (req,res) => {
+    const dbRoom = req.body
+    Rooms.create(dbRoom, (err, data) => {
         if(err){
             res.status(500).send(err)
         }
