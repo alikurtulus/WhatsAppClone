@@ -5,9 +5,13 @@ import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
 import MicIcon from '@material-ui/icons/Mic'
 import {AttachFile, MoreVert, SearchOutlined} from '@material-ui/icons'
 import axios from '../../axios'
+import {useParams} from 'react-router-dom'
+
 const  Chat = ({messages}) => {
     const [seed,setSeed] = useState('')
     const [input, setInput] = useState('')
+    const {roomId} = useParams()
+    const [roomName,setRoomName] = useState('')
     const sendMessage = async (e) => {
       e.preventDefault()
      await axios.post('/api/v1/messages/new', {
@@ -21,25 +25,38 @@ const  Chat = ({messages}) => {
     useEffect(() =>{
         setSeed(Math.floor(Math.random() * 5000))
     },[])
+    useEffect(() => {
+      console.log( "Ds")
+      if(roomId){
+        axios.get('/api/v1/rooms/sync')
+        .then(res => {
+          let allRooms = res.data
+          console.log(allRooms)
+          const selectedRoom = allRooms.filter(r => r._id === roomId)
+          setRoomName(selectedRoom.name)
+        })
+      }
+    },[roomId])
+
     return (
         <div  className="chat">
             <div className="chat_header">
-               <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
-               <div className="chat_headerInfo">
-                <h3>Room name</h3>
+              <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
+              <div className="chat_headerInfo">
+                <h3>{roomName}</h3>
                 <p>Last message...</p>
-               </div>
-               <div className="chat_headerRight">
-                 <IconButton>
-                   <SearchOutlined />
-                 </IconButton>
-                 <IconButton>
-                   <AttachFile/>
-                 </IconButton>
-                 <IconButton>
-                   <MoreVert />
-                 </IconButton>
-               </div>
+              </div>
+              <div className="chat_headerRight">
+                <IconButton>
+                  <SearchOutlined />
+                </IconButton>
+                <IconButton>
+                  <AttachFile/>
+                </IconButton>
+                <IconButton>
+                  <MoreVert />
+                </IconButton>
+              </div>
             </div>
             <div className="chat_body">
               {messages.map(message => (

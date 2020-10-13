@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar/Sidebar'
 import Chat from './components/Chat/Chat'
 import Pusher from 'pusher-js'
 import axios from './axios'
+import {BrowserRouter as Router,Switch,Route} from 'react-router-dom'
 
 function App() {
   const [messages,setMessages] = useState([])
@@ -27,13 +28,22 @@ function App() {
       channel.unsubscribe()
     }
   },[messages])
-  console.log(messages)
+
   return (
     //BEM naming convention
     <div className="app">
       <div className="app_body">
-        <Sidebar />
-        <Chat messages={messages} />
+        <Router>
+          <Switch>
+           <Sidebar />
+            <Route path="/rooms/:roomId">
+              <Chat messages={messages} />
+            </Route>
+            <Route exact path="/" >
+              <Chat messages={messages} />
+            </Route>
+          </Switch>
+        </Router>
       </div>
     </div>
   );
