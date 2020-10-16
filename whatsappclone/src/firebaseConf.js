@@ -11,9 +11,8 @@ import firebase from 'firebase'
     measurementId: "G-XXMW6HW6SF"
   };
   // Initialize Firebase
-  const firebaseApp = firebase.initializeApp(firebaseConfig);
-  const db = firebaseApp.firestore()
+  const firebaseApp = firebase.initializeApp(firebaseConfig)
   const auth = firebase.auth()
   const provider = new firebase.auth.GoogleAuthProvider()
 
-  export  {auth, provider}
+  export {auth, provider}

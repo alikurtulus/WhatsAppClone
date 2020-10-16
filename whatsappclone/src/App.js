@@ -5,13 +5,20 @@ import Chat from './components/Chat/Chat'
 import Pusher from 'pusher-js'
 import axios from './axios'
 import {BrowserRouter as Router,Switch,Route} from 'react-router-dom'
+import Login from './components/Login/Login'
+import {useStateValue} from './StateProvider'
 
 function App() {
   const [messages,setMessages] = useState([])
+  const [{user}, dispatch] = useStateValue()
   useEffect(() => {
-    axios.get('/api/v1/messages/sync')
+    axios.get('/api/v1/rooms/sync')
     .then(res => {
-      setMessages(res.data)
+      const {rooms} = res.data
+      if(rooms){
+        setMessages(rooms[0].messages)
+      }
+     
     })
   },[])
   useEffect(()=> {
@@ -28,25 +35,27 @@ function App() {
       channel.unsubscribe()
     }
   },[messages])
-
   return (
     //BEM naming convention
     <div className="app">
-      <div className="app_body">
-        <Router>
-          <Switch>
-           <Sidebar />
-            <Route path="/rooms/:roomId">
-              <Chat messages={messages} />
-            </Route>
-            <Route exact path="/" >
-              <Chat messages={messages} />
-            </Route>
-          </Switch>
-        </Router>
-      </div>
+      {!user ? (
+        <Login />
+      ) : 
+         (<div className="app_body">
+            <Router>
+              <Sidebar />
+              <Switch>
+                <Route path="/rooms/:roomId">
+                  <Chat messages={messages}  />
+                </Route>
+                <Route exact path="/" >
+                  <Chat messages={messages}   />
+                </Route>
+              </Switch>
+            </Router>
+        </div>)
+      }
     </div>
   );
 }
-
 export default App;

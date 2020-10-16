@@ -1,10 +1,11 @@
 // importing all stuff
-import express from 'express'
-import mongoose from 'mongoose'
-import Messages from './dbMessages.js'
-import Rooms from './dbRooms.js'
-import Pusher from 'pusher'
-import cors from 'cors'
+const express = require('express')
+const mongoose = require('mongoose') 
+const Pusher = require('pusher')
+const cors = require('cors')
+const  HttpError = require('./models/HttpError')
+const messageRouter = require('./routes/message-routes')
+const roomRouter  = require('./routes/room-routes')
 
 // app config 
 const app = express()
@@ -20,6 +21,23 @@ const pusher = new Pusher({
   
 // middleware config
 app.use(express.json())
+app.use((req, res, next) => {                                                   // We need to write this middleware. Because We decide to  how to get a request from the client.This is like protocol between server and client for the communication.
+    res.setHeader('Access-Control-Allow-Origin','*')
+    res.setHeader('Access-Control-Allow-Headers',
+                  'Origin, X-Request-With, Content-Type, Accept, Authorization'
+  )
+   res.setHeader('Access-Control-Allow-Methods','GET, POST, PUT, DELETE')
+    next()
+  })
+  
+app.use('/api/v1/rooms', roomRouter)
+app.use('/api/v1/messages',messageRouter)
+
+
+app.use((req, res, next) => {                                                   // When the client try to access wrong routes. We need to say the client is going wrong way.
+    const error = new HttpError('Could not find this route', 404)
+    throw error
+  })
 app.use(cors())
 
 // db config
@@ -32,13 +50,13 @@ mongoose.connect(conectionUrl, {
 const db = mongoose.connection
 db.once('open', () => {
     console.log('db connected ...')
-    const msgCollection = db.collection('messagecontents')
+    const msgCollection = db.collection('rooms')
     const changeStream = msgCollection.watch()
     changeStream.on('change', (change) => {
         console.log(change)
         if(change.operationType === 'insert'){
             const messageDetails = change.fullDocument;
-            pusher.trigger('messages','inserted', {
+            pusher.trigger('rooms','inserted', {
                 name: messageDetails.name,
                 message: messageDetails.message,
                 timestamp: messageDetails.timestamp,
@@ -51,6 +69,7 @@ db.once('open', () => {
     })
 })
 
+/*
 // api routes stuff
 app.get('/', (req, res) => res.status(200).send('hello world'))
 app.get('/api/v1/messages/sync', (req,res)=> {
@@ -78,7 +97,7 @@ app.post('/api/v1/messages/new', (req,res) => {
 
 app.get('/api/v1/rooms/sync', (req,res) => {
     const dbRoom = req.body
-    Rooms.find((err,data) => {
+    Room.find((err,data) => {
         if(err){
             res.status(500).send(err)
         }
@@ -90,7 +109,7 @@ app.get('/api/v1/rooms/sync', (req,res) => {
 
 app.post('/api/v1/rooms/new', (req,res) => {
     const dbRoom = req.body
-    Rooms.create(dbRoom, (err, data) => {
+    Room.create(dbRoom, (err, data) => {
         if(err){
             res.status(500).send(err)
         }
@@ -99,5 +118,6 @@ app.post('/api/v1/rooms/new', (req,res) => {
         }
     })
 })
+*/
 // listen 
 app.listen(port, () => console.log(`Listening on localhost:${port}`))

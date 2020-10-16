@@ -8,6 +8,7 @@ import SearchOutlined from '@material-ui/icons/SearchOutlined'
 import AddIcon from '@material-ui/icons/Add';
 import SidebarChat from './SidebarChat'
 import axios from '../../axios'
+import {useStateValue} from '../../StateProvider'
 
 const Sidebar = () => {
   const [rooms,setRooms] = useState([])
@@ -15,13 +16,15 @@ const Sidebar = () => {
   const [searchResults,setSearchResults] = useState([])
   const [isSearched,setIsSearched] = useState(false)
   const [seed,setSeed] = useState('')
- 
+  const [{user}, dispatch] = useStateValue()
   useEffect(() => {
     if(searchTerm === ''){
       axios.get('/api/v1/rooms/sync')
       .then(res => {
-        setRooms(res.data)
-        setSearchResults(res.data)
+        const allRooms = res.data
+        setRooms(allRooms.rooms)
+        console.log(res.data)
+        setSearchResults(allRooms.rooms)
         setSeed(Math.floor(Math.random() * 5000))
       })
     }
@@ -50,7 +53,8 @@ const Sidebar = () => {
     setSearchTerm('')
     axios.get('/api/v1/rooms/sync')
     .then(res => {
-      setSearchResults(res.data)
+      const allRooms = res.data
+      setSearchResults(allRooms.rooms)
     })
 
   }
@@ -58,7 +62,7 @@ const Sidebar = () => {
     return (
         <div className="sidebar">
             <div className="sidebar_header">
-              <Avatar />
+              <Avatar src={user?.photoURL}/>
               <div className="sidebar_headerRight">
                 <IconButton>
                   <DonutLargeIcon />
