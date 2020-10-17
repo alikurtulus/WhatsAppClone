@@ -4,13 +4,14 @@ import Sidebar from './components/Sidebar/Sidebar'
 import Chat from './components/Chat/Chat'
 import Pusher from 'pusher-js'
 import axios from './axios'
-import {BrowserRouter as Router,Switch,Route} from 'react-router-dom'
+import {BrowserRouter as Router,Switch,Route, useParams} from 'react-router-dom'
 import Login from './components/Login/Login'
 import {useStateValue} from './StateProvider'
 
 function App() {
   const [messages,setMessages] = useState([])
   const [{user}, dispatch] = useStateValue()
+  /*
   useEffect(() => {
     axios.get('/api/v1/rooms/sync')
     .then(res => {
@@ -20,7 +21,7 @@ function App() {
       }
      
     })
-  },[])
+  },[messages])
   useEffect(()=> {
     const pusher = new Pusher('0db53fdb4a3dd2c3d8d9', {
       cluster: 'eu'
@@ -28,13 +29,23 @@ function App() {
 
     const channel = pusher.subscribe('messages');
     channel.bind('inserted', (newMessage) => {
+      
+      if(roomId !== undefined){
+        axios.get(`/api/v1/rooms/sync/${roomId}`)
+        .then(res => {
+          console.log(res.data)
+        })
+      }
+    
       setMessages([...messages,newMessage])
     });
+    *
     return () => {
       channel.unbind_all()
       channel.unsubscribe()
     }
   },[messages])
+  */
   return (
     //BEM naming convention
     <div className="app">
@@ -46,10 +57,10 @@ function App() {
               <Sidebar />
               <Switch>
                 <Route path="/rooms/:roomId">
-                  <Chat messages={messages}  />
+                  <Chat   />
                 </Route>
-                <Route exact path="/" >
-                  <Chat messages={messages}   />
+                <Route  path="/" >
+                  <Chat  />
                 </Route>
               </Switch>
             </Router>
