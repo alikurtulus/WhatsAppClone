@@ -4,11 +4,12 @@ import {Avatar, IconButton} from '@material-ui/core'
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
 import MicIcon from '@material-ui/icons/Mic'
 import {AttachFile, DeleteForever, MoreVert, SearchOutlined} from '@material-ui/icons'
-import axios from '../../axios'
 import {useParams} from 'react-router-dom'
 import {useStateValue} from '../../StateProvider'
 import db from '../../firebase'
 import firebase from 'firebase'
+import Picker from 'emoji-picker-react';
+
 
 const  Chat = () => {
     const [seed,setSeed] = useState('')
@@ -17,6 +18,7 @@ const  Chat = () => {
     const [{user},dispatch] = useStateValue()
     const [messages, setMessages] = useState([])
     const {roomId} = useParams()
+    const [isToggleEmoji,setIsToggleEmoji] = useState(false);
   
     useEffect(() => {
     if(roomId){
@@ -38,6 +40,7 @@ const  Chat = () => {
     const sendMessage =  (e) => {
       e.preventDefault()
       console.log(messages)
+     
       db.collection('rooms')
       .doc(roomId).collection('messages')
       .add({ 
@@ -49,6 +52,25 @@ const  Chat = () => {
    
       setInput('')
     }
+    const toggleEmoji = (e) =>{
+       e.preventDefault()
+       setIsToggleEmoji(!isToggleEmoji)
+
+    }
+    const onEmojiClick = (event, emojiObject) => {
+      setInput(input+emojiObject.emoji)  
+    };
+    const handleChange = (e) =>{
+      e.preventDefault()
+     
+      setInput(e.target.value)
+      
+      
+     
+      
+    }
+ 
+
 
     return (
         <div  className="chat">
@@ -80,9 +102,9 @@ const  Chat = () => {
               ))}
             </div>
             <div className="chat_footer">
-              <InsertEmoticonIcon />
+              <a onClick={toggleEmoji} className="emoji-btn"> {!isToggleEmoji ?(<InsertEmoticonIcon />) : (<Picker onEmojiClick={onEmojiClick} />)}</a>
               <form>
-                <input value={input} onChange={(e)=> setInput(e.target.value)} type="text" placeholder="Type a message" /> 
+                <input value={input} onChange={handleChange} type="text" placeholder="Type a message" /> 
                 <button onClick={sendMessage} type="submit" >Send a message</button>
               </form>
               <MicIcon />

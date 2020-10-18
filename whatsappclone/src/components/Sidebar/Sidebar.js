@@ -7,7 +7,6 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import SearchOutlined from '@material-ui/icons/SearchOutlined'
 import AddIcon from '@material-ui/icons/Add';
 import SidebarChat from './SidebarChat'
-import axios from '../../axios'
 import {useStateValue} from '../../StateProvider'
 import db from '../../firebase'
 
