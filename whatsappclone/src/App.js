@@ -2,8 +2,6 @@ import React, {useEffect, useState} from 'react';
 import './App.css';
 import Sidebar from './components/Sidebar/Sidebar'
 import Chat from './components/Chat/Chat'
-import Pusher from 'pusher-js'
-import axios from './axios'
 import {BrowserRouter as Router,Switch,Route, useParams} from 'react-router-dom'
 import Login from './components/Login/Login'
 import {useStateValue} from './StateProvider'
