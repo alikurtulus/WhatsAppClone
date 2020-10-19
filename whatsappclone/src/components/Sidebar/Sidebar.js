@@ -73,10 +73,10 @@ const Sidebar = () => {
             <div className="sidebar_header">
               <Avatar src={user?.photoURL}/>
               <div className="sidebar_headerRight">
-                <IconButton>
+                <IconButton >
                   <DonutLargeIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton >
                   <ChatIcon />
                 </IconButton>
                 <IconButton> 
@@ -96,8 +96,6 @@ const Sidebar = () => {
               )) : searchResults.map(r => (
                 <SidebarChat key={r.id} id={r.id} name={r.data.name} />
               ))}
-              
-            
             </div>
         </div>
     )

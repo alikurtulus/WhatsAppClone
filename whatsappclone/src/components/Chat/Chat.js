@@ -3,12 +3,13 @@ import './Chat.css'
 import {Avatar, IconButton} from '@material-ui/core'
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon'
 import MicIcon from '@material-ui/icons/Mic'
-import {AttachFile, DeleteForever, MoreVert, SearchOutlined} from '@material-ui/icons'
+import {AttachFile, MoreVert, SearchOutlined} from '@material-ui/icons'
 import {useParams} from 'react-router-dom'
 import {useStateValue} from '../../StateProvider'
 import db from '../../firebase'
 import firebase from 'firebase'
 import Picker from 'emoji-picker-react';
+
 
 
 const  Chat = () => {
@@ -64,16 +65,11 @@ const  Chat = () => {
       e.preventDefault()
      
       setInput(e.target.value)
-      
-      
-     
-      
     }
  
-
-
     return (
-        <div  className="chat">
+    
+         <div  className="chat">
             <div className="chat_header">
               <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
               <div className="chat_headerInfo">
@@ -110,6 +106,8 @@ const  Chat = () => {
               <MicIcon />
             </div>
         </div>
+     
+        
     )
 }
 
